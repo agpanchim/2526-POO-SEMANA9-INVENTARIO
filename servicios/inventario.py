@@ -1,67 +1,56 @@
 from modelos.producto import Producto
-menu()
-opcion = input("Seleccione una opción: ")
 
+# Clase Inventario
+# Se encarga de la gestión de los productos
+class Inventario:
+    def __init__(self):
+        # Lista que almacena los productos del inventario
+        self.productos = []
 
-if opcion == "1":
-# Añadir un nuevo producto
-try:
-id_producto = input("ID: ")
-nombre = input("Nombre: ")
-cantidad = int(input("Cantidad: "))
-precio = float(input("Precio: "))
+    def agregar_producto(self, producto):
+        # Validar que el ID no esté repetido
+        for p in self.productos:
+            if p.get_id() == producto.get_id():
+                print(" Error: El ID ya existe.")
+                return
+        self.productos.append(producto)
+        print(" Producto agregado correctamente.")
 
+    def eliminar_producto(self, id_producto):
+        # Eliminar un producto por ID
+        for p in self.productos:
+            if p.get_id() == id_producto:
+                self.productos.remove(p)
+                print(" Producto eliminado.")
+                return
+        print(" Producto no encontrado.")
 
-producto = Producto(id_producto, nombre, cantidad, precio)
-inventario.agregar_producto(producto)
-except ValueError:
-print(" Error: datos inválidos.")
+    def actualizar_producto(self, id_producto, nueva_cantidad=None, nuevo_precio=None):
+        # Actualizar cantidad y/o precio de un producto
+        for p in self.productos:
+            if p.get_id() == id_producto:
+                if nueva_cantidad is not None:
+                    p.set_cantidad(nueva_cantidad)
+                if nuevo_precio is not None:
+                    p.set_precio(nuevo_precio)
+                print(" Producto actualizado.")
+                return
+        print(" Producto no encontrado.")
 
+    def buscar_producto(self, nombre):
+        # Buscar productos por coincidencia parcial de nombre
+        encontrados = []
+        for p in self.productos:
+            if nombre.lower() in p.get_nombre().lower():
+                encontrados.append(p)
+        return encontrados
 
-elif opcion == "2":
-# Eliminar un producto por ID
-id_producto = input("Ingrese el ID a eliminar: ")
-inventario.eliminar_producto(id_producto)
+    def listar_productos(self):
+        # Mostrar todos los productos del inventario
+        if not self.productos:
+            print(" Inventario vacío.")
+        else:
+            for p in self.productos:
+                print(p)
 
-
-elif opcion == "3":
-# Actualizar cantidad o precio de un producto
-id_producto = input("ID del producto: ")
-try:
-cantidad = input("Nueva cantidad (Enter para omitir): ")
-precio = input("Nuevo precio (Enter para omitir): ")
-
-
-inventario.actualizar_producto(
-id_producto,
-int(cantidad) if cantidad else None,
-float(precio) if precio else None
-)
-except ValueError:
-print(" Error en los datos.")
-
-
-elif opcion == "4":
-# Buscar productos por nombre
-nombre = input("Nombre a buscar: ")
-resultados = inventario.buscar_producto(nombre)
-if resultados:
-for p in resultados:
-print(p)
-else:
-print("🔍 No se encontraron productos.")
-
-
-elif opcion == "5":
-# Listar todos los productos
-inventario.listar_productos()
-
-
-elif opcion == "6":
-# Salir del sistema
-print(" Saliendo del sistema...")
-break
-
-
-else:
-print(" Opción inválida.")
+print("Inventario cargado")
